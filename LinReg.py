@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 class NumpyLinReg:
     def __init__(self, in_features, bias=False, lr=0.1):
         self.weights = np.random.random(in_features) # ~ (f)
-        self.bias = np.random.random(1) # ~ (1)
+        self.bias = np.random.random(1) if bias else np.zeros(1) # ~ (1)
         self.calc_bias = bias
         self.lr = lr
 
@@ -22,8 +22,9 @@ class NumpyLinReg:
         return self.weights @ x.T + self.bias
     
     def update_weights(self, x, y):
+        weight_sum = np.dot(self.weights, x)
         for i in range(len(self.weights)):
-            derivative = - x[i] * (y - self.weights[i] * x[i] - self.bias) # SE = 1/2 * (y - y')^2
+            derivative = - x[i] * (y - weight_sum - self.bias) # SE = 1/2 * (y - y')^2
             self.weights[i] -= self.lr*derivative
 
     def update_bias(self, x, y):
@@ -84,6 +85,7 @@ class TorchLinReg(nn.Module):
         self.l = nn.Linear(in_features, 1, bias=bias)
         self.lr = lr
         self.device = device
+        self.bias = bias
         if device:
             self.to(device)
     
@@ -123,34 +125,34 @@ if __name__ == "__main__":
 
     print(x.shape, y.shape)
 
-    model = NumpyLinReg(x.shape[1], bias=True, lr=1e-5 if x.shape[1] == 2 else 1e-2)
+    model = NumpyLinReg(x.shape[1], bias=True, lr=1e-1)
     model.train(x_train, y_train)
     nlt_metrics = model.validate(x_test, y_test)
     nlt_weights = np.hstack((model.weights, model.bias))
 
-    plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
-    plt.scatter(x_test, model.forward(x_test), s=10, linewidths=0.5, label=f'Predicted Values (R2={nlt_metrics[1]:.2f})')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Numpy Linear Regression Backpropagation')
-    plt.legend()
-    plt.savefig("NumpyLinReg.png")
-    plt.close()
+    # plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
+    # plt.scatter(x_test, model.forward(x_test), s=10, linewidths=0.5, label=f'Predicted Values (R2={nlt_metrics[1]:.2f})')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.title('Numpy Linear Regression Backpropagation')
+    # plt.legend()
+    # plt.savefig("NumpyLinReg.png")
+    # plt.close()
 
 
     closed = NumpyLinRegCloseForm(bias=True)
     closed.fit(x_train, y_train)
     nltc_metrics = closed.validate(x_test, y_test)
-    clr_weights = closed.weights.reshape(-1)
+    clr_weights = closed.weights.reshape(-1) if closed.bias else np.concat((closed.weights.reshape(-1), np.zeros(1)))
     
-    plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
-    plt.scatter(x_test, model.forward(x_test), s=10, linewidths=0.5, label=f'Predicted Values (R2={nltc_metrics[1]:.2f})')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Numpy Linear Regression Closed Form')
-    plt.legend()
-    plt.savefig("NumpyLinRegCloseForm.png")
-    plt.close()
+    # plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
+    # plt.scatter(x_test, model.forward(x_test), s=10, linewidths=0.5, label=f'Predicted Values (R2={nltc_metrics[1]:.2f})')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.title('Numpy Linear Regression Closed Form')
+    # plt.legend()
+    # plt.savefig("NumpyLinRegCloseForm.png")
+    # plt.close()
     
     x_train, y_train = torch.from_numpy(x_train), torch.from_numpy(y_train)
     x_test, y_test = torch.from_numpy(x_test), torch.from_numpy(y_test)
@@ -158,16 +160,16 @@ if __name__ == "__main__":
     model = TorchLinReg(x.shape[1], bias=True, lr=1e-1, device=None)
     model.train(x_train, y_train)
     tlr_metrics = model.validate(x_test, y_test)
-    tlt_weights = np.hstack((model.l.weight.detach().numpy().reshape(-1), model.l.bias.detach().numpy()))
+    tlt_weights = np.hstack((model.l.weight.detach().numpy().reshape(-1), model.l.bias.detach().numpy())) if model.bias else np.concat((model.l.weight.detach().numpy().reshape(-1), np.zeros(1)))
     
-    plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
-    plt.scatter(x_test, model.forward(x_test).detach().numpy(), s=10, linewidths=0.5, label=f'Predicted Values (R2={tlr_metrics[1]:.2f})')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title('Torch Linear Regression Backpropagation')
-    plt.legend()
-    plt.savefig("TorchLinReg.png")
-    plt.close()
+    # plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
+    # plt.scatter(x_test, model.forward(x_test).detach().numpy(), s=10, linewidths=0.5, label=f'Predicted Values (R2={tlr_metrics[1]:.2f})')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.title('Torch Linear Regression Backpropagation')
+    # plt.legend()
+    # plt.savefig("TorchLinReg.png")
+    # plt.close()
 
     data = np.vstack((nlt_metrics, nltc_metrics, tlr_metrics))
     data = np.hstack((data, np.vstack((nlt_weights, clr_weights, tlt_weights)))).round(3)
