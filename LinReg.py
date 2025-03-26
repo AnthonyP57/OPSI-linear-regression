@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import warnings
 import matplotlib.pyplot as plt
-from modules import timeit, xy_plot
+from modules import timeit, xy_plot, xyz_plot
 import pandas as pd
 
 class NumpyLinReg:
@@ -118,9 +118,9 @@ if __name__ == "__main__":
 
     # REVERSE COMMENTS HERE TO SWITCH BETWEEN LR AND MLR (no visualization)
     x = np.arange(0, 1000, 1, dtype=np.float32).reshape(-1, 1)/1000
-    # x = np.hstack((x, x*1.5))
-    # y = np.sum(x, axis=1).reshape(-1, 1) + 0.1
-    y = x*2 + 1
+    x = np.hstack((x, x*1.5))
+    y = np.sum(x, axis=1).reshape(-1, 1) + 0.1
+    # y = x*2 + 1
 
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.05, random_state=42)
 
@@ -132,7 +132,8 @@ if __name__ == "__main__":
     nlt_metrics_train = model.validate(x_train, y_train)
     nlt_weights = np.hstack((model.weights, model.bias))
 
-    xy_plot(x_test, y_test, model.forward(x_test), nlt_metrics, 'NumpyLinReg.png')
+    # xy_plot(x_test, y_test, model.forward(x_test), nlt_metrics, 'NumpyLinReg.png')
+    xyz_plot(x_test, y_test, model.forward(x_test), nlt_metrics, 'NumpyLinReg3d.png')
 
     closed = NumpyLinRegCloseForm(bias=True)
     closed.fit(x_train, y_train)
@@ -140,18 +141,20 @@ if __name__ == "__main__":
     nltc_metrics_train = closed.validate(x_train, y_train)
     clr_weights = closed.weights.reshape(-1) if closed.bias else np.concat((closed.weights.reshape(-1), np.zeros(1)))
     
-    xy_plot(x_test, y_test, closed.forward(x_test), nltc_metrics, 'NumpyLinRegCloseForm.png')
+    # xy_plot(x_test, y_test, closed.forward(x_test), nltc_metrics, 'NumpyLinRegCloseForm.png')
+    xyz_plot(x_test, y_test, closed.forward(x_test), nltc_metrics, 'NumpyLinRegCloseForm3d.png')
     
     x_train, y_train = torch.from_numpy(x_train), torch.from_numpy(y_train)
     x_test, y_test = torch.from_numpy(x_test), torch.from_numpy(y_test)
 
-    model = TorchLinReg(x.shape[1], bias=True, lr=1e-1, device=None)
+    model = TorchLinReg(x.shape[1], bias=True, lr=1e-5, device=None)
     model.train(x_train, y_train)
     tlr_metrics = model.validate(x_test, y_test)
     tlr_metrics_train = model.validate(x_train, y_train)
     tlt_weights = np.hstack((model.l.weight.detach().numpy().reshape(-1), model.l.bias.detach().numpy())) if model.bias else np.concat((model.l.weight.detach().numpy().reshape(-1), np.zeros(1)))
     
-    xy_plot(x_test, y_test, model.forward(x_test).detach().numpy(), tlr_metrics, 'TorchLinReg.png')
+    # xy_plot(x_test, y_test, model.forward(x_test).detach().numpy(), tlr_metrics, 'TorchLinReg.png')
+    xyz_plot(x_test, y_test, model.forward(x_test).detach().numpy(), tlr_metrics, 'TorchLinReg3d.png')
 
     data = np.vstack((nlt_metrics, nltc_metrics, tlr_metrics))
     data = np.hstack((data, np.vstack((nlt_metrics_train, nltc_metrics_train, tlr_metrics_train))))

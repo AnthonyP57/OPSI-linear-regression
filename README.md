@@ -46,7 +46,7 @@ class NumpyLinRegCloseForm:
 #### Directional derivative (pochodna kierunkowa)
 $D_v = <\nabla f, v>$
 
-Pochodna kierunkowa mówi na jak zachowuje się dana funkcja, gdy chcielibyśmy się poruszyć w danym kierunku $v$
+Pochodna kierunkowa mówi nam jak zachowuje się dana funkcja, gdy chcielibyśmy się poruszyć w danym kierunku $v$
 
 ![Directional derivative](./img/Dv.png)
 
