@@ -118,6 +118,26 @@ class NumpyLinReg:
         return np.mean((y - y_pred)**2), r2_score(y, y_pred)
 ```
 
+### Generowanie danych
+Bierzemy pod uwagę następujące zależności:
+
+$y = a \cdot x + b + noise$
+
+$y = a \cdot ln(x) + b + noise$
+
+$y = \frac{a}{x+b} + noise = \frac{a + noise(x+b)}{x+b}$
+
+$y = a \cdot exp(x \cdot b) + noise$
+
+Które po linearyzacji prezentują się następująco:
+
+$y = a \cdot [x] + b + noise$
+
+$y = a \cdot [ln(x)] + b + noise$
+
+$\frac{1}{y} = \frac{[x]}{u} + \frac{b}{u} \approx \frac{[x]}{a} + \frac{b}{a} + noise' \text{ where } u = a + noise \cdot (x+b)$
+
+$ln(y) \approx ln(a) + b \cdot [x] + noise'$
 
 # Literatura
 [^1]: Scardapane, S. (2024, April 26). Alice’s Adventures in a Differentiable Wonderland -- Volume I, A Tour of the Land. arXiv.org. https://arxiv.org/abs/2404.17625
