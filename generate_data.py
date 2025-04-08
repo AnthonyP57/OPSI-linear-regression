@@ -75,10 +75,16 @@ class LogData:
         return self.y, np.log(self.x)
 
 if __name__ == "__main__":
-    exp = ExponentialData(1,2, 16)
-    inv = InverseData(1,.1, 16)
-    log = LogData(1,1,16)
-    noise = Noise(0,.01,16)
+    a=1
+    b=2
+    size=16
+
+    mu, sigma = 0, 0.01
+
+    exp = ExponentialData(a,b,size)
+    inv = InverseData(a,b,size)
+    log = LogData(a,b,size)
+    noise = Noise(mu, sigma, size)
 
     exp = exp + noise
     inv = inv + noise
