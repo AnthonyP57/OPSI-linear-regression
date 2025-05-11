@@ -31,6 +31,13 @@ class Noise:
         self.size = size
         self.value = np.random.normal(mu, sigma, size)
 
+class UniformNoise:
+    def __init__(self, mu, max_deviation, size):
+        self.mu = mu
+        self.max_deviation = max_deviation
+        self.size = size
+        self.value = (np.random.random(size)*2 - 1) * max_deviation + mu        
+
 class InverseData:
     def __init__(self, a, b, size, minmax=(0,1)):
         self.a = a
@@ -124,10 +131,11 @@ if __name__ == "__main__":
     plt.savefig('./data_linear.png')
     plt.close()
 
-    # Przygotowanie wspólnych wykresów
     fig_linear, axs_linear = plt.subplots(len(noise_levels), 3, figsize=(18, 12))
     fig_original, axs_original = plt.subplots(len(noise_levels), 3, figsize=(18, 12))
     fig_residuals, axs_residuals = plt.subplots(len(noise_levels), 3, figsize=(18, 12))
+    residuals_min = 1e10
+    residuals_max = -1e10
 
     for i, sigma in enumerate(noise_levels):
         noise = Noise(mu=0, sigma=sigma, size=size)
@@ -162,7 +170,20 @@ if __name__ == "__main__":
             axs_residuals[i, j].set_title(f"{label} (σ={sigma}) - reszty")
             axs_residuals[i, j].grid(True)
 
-    # Zapis wykresów
+            if residuals_min > min(residuals):
+                residuals_min = min(residuals)
+            if residuals_max < max(residuals):
+                residuals_max = max(residuals)
+
+    residuals_max *= 1.1
+    residuals_min *= 0.9
+
+    for plot in [axs_linear, axs_original, axs_residuals]:
+        for ax in plot.flatten():
+            for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
+                    ax.get_xticklabels() + ax.get_yticklabels()):
+                item.set_fontsize(16)
+
     fig_linear.tight_layout()
     fig_linear.savefig('linearized_all_sigmas.png')
     plt.close(fig_linear)
@@ -170,6 +191,12 @@ if __name__ == "__main__":
     fig_original.tight_layout()
     fig_original.savefig('original_all_sigmas.png')
     plt.close(fig_original)
+
+    for i in range(len(noise_levels)):
+        axs_residuals[i, 0].set_ylim(residuals_min, residuals_max)
+        axs_residuals[i, 1].set_ylim(residuals_min, residuals_max)
+        axs_residuals[i, 2].set_ylim(residuals_min, residuals_max)
+    
 
     fig_residuals.tight_layout()
     fig_residuals.savefig('residuals_all_sigmas.png')
