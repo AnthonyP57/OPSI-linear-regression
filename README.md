@@ -139,5 +139,53 @@ $\frac{1}{y} = \frac{[x]}{u} + \frac{b}{u} \approx \frac{[x]}{a} + \frac{b}{a} +
 
 $ln(y) \approx ln(a) + b \cdot [x] + noise'$
 
+# Statystyki
+Przykłądowe statystyki można otrzymać za pomocą modułu:
+```
+generate_data.py
+```
+Można za pomocą niego uzyskać przykładowe funkcje nielinowe e.g.
+
+<p align="left">
+  <img src="./data.png" alt="data" width="450"/>
+</p>
+
+Następnie, po przekształceniu, ich liniową postać
+
+<p align="left">
+  <img src="./data_linear.png" alt="data" width="450"/>
+</p>
+
+Porównanie ich wyglądu ze względu na poziom dodanego szumu (poniżej akurat z dystrybucji Gaussa). Przed linearyzacją
+
+<p align="left">
+  <img src="./original_all_sigmas.png" alt="data" width="700"/>
+</p>
+
+Oraz po linearyzacji
+
+<p align="left">
+  <img src="./linearized_all_sigmas.png" alt="data" width="700"/>
+</p>
+
+Również otzymamy informację na temat reszt regresji liniowej
+
+<p align="left">
+  <img src="./residuals_all_sigmas.png" alt="data" width="700"/>
+</p>
+
+Wielokrotne wyznaczanie metryk modelu, w celu wyznaczenia statstyk można uzyskać za pomocą:
+```
+statistics_linear.py
+```
+
+Przykładowe wyniki
+
+|$\text{type}$|$mean \space R^2$|$R^2 \space std$|
+|---|---|---|
+|log|0.997|0.0005|
+|inv|0.985|0.0030|
+|exp|0.999|0.0002|
+
 # Literatura
 > Scardapane, S. (2024, April 26). Alice’s Adventures in a Differentiable Wonderland -- Volume I, A Tour of the Land. arXiv.org. https://arxiv.org/abs/2404.17625
