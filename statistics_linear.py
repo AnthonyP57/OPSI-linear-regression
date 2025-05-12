@@ -12,7 +12,7 @@ def get_stats(n_measurements, a, b, size, mu, sigma, out_path=None, noise_class=
 
     for _ in range(n_measurements):
         for i, t in enumerate([LogData, InverseData, ExponentialData]):
-            data = LogData(a, b, size)
+            data = t(a, b, size)
             noise = noise_class(mu, sigma, size)
 
             data += noise
