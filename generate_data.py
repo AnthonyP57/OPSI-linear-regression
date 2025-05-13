@@ -138,7 +138,8 @@ if __name__ == "__main__":
     residuals_max = -1e10
 
     for i, sigma in enumerate(noise_levels):
-        noise = Noise(mu=0, sigma=sigma, size=size)
+        # noise = Noise(mu=0, sigma=sigma, size=size)
+        noise = UniformNoise(mu=0, max_deviation=sigma, size=size)
 
         for j, (label, DataClass) in enumerate([
             ('Exponential', ExponentialData),
@@ -156,18 +157,18 @@ if __name__ == "__main__":
             # Wykres linearyzowany
             axs_linear[i, j].scatter(x_prime, y_prime, label="Dane liniaryzowane")
             axs_linear[i, j].plot(x_prime, y_pred, color="red", label=f"$R^2$={r2:.3f}")
-            axs_linear[i, j].set_title(f"{label} (σ={sigma}) - lin.")
+            axs_linear[i, j].set_title(f"{label} (max deviation={sigma}) - lin.")
             axs_linear[i, j].legend()
             axs_linear[i, j].grid(True)
 
             # Wykres oryginalny
             axs_original[i, j].scatter(data.x, data.y, label="Dane oryginalne")
-            axs_original[i, j].set_title(f"{label} (σ={sigma}) - orig.")
+            axs_original[i, j].set_title(f"{label} (max deviation={sigma}) - orig.")
             axs_original[i, j].grid(True)
 
             # Wykres reszt
             axs_residuals[i, j].bar(range(len(residuals)), residuals)
-            axs_residuals[i, j].set_title(f"{label} (σ={sigma}) - reszty")
+            axs_residuals[i, j].set_title(f"{label} (max deviation={sigma}) - reszty")
             axs_residuals[i, j].grid(True)
 
             if residuals_min > min(residuals):
@@ -185,11 +186,11 @@ if __name__ == "__main__":
                 item.set_fontsize(16)
 
     fig_linear.tight_layout()
-    fig_linear.savefig('linearized_all_sigmas.png')
+    fig_linear.savefig('linearized_all_sigmas_uniform.png')
     plt.close(fig_linear)
 
     fig_original.tight_layout()
-    fig_original.savefig('original_all_sigmas.png')
+    fig_original.savefig('original_all_sigmas_uniform.png')
     plt.close(fig_original)
 
     for i in range(len(noise_levels)):
@@ -199,5 +200,5 @@ if __name__ == "__main__":
     
 
     fig_residuals.tight_layout()
-    fig_residuals.savefig('residuals_all_sigmas.png')
+    fig_residuals.savefig('residuals_all_sigmas_uniform.png')
     plt.close(fig_residuals)
