@@ -93,7 +93,7 @@ if __name__ == "__main__":
     b=2
     size=16
 
-    noise_levels = [0.01, 0.05, 0.1]
+    noise_levels = np.round(np.array([0.01, 0.05, 0.1]) * 3, 2)
     results_noise = {level: {} for level in noise_levels}
 
     mu, sigma = 0, 0.01
@@ -139,6 +139,7 @@ if __name__ == "__main__":
 
     for i, sigma in enumerate(noise_levels):
         # noise = Noise(mu=0, sigma=sigma, size=size)
+        sigma = sigma
         noise = UniformNoise(mu=0, max_deviation=sigma, size=size)
 
         for j, (label, DataClass) in enumerate([

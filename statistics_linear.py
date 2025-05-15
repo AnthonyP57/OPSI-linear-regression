@@ -44,7 +44,6 @@ if __name__ == '__main__':
     a=1
     b=2
     size=32
-    mu, sigma = 0, 0.01
+    mu, sigma = 0, 0.1
 
-    tab = get_stats(n_measurements, a, b, size, mu, sigma, noise_class=UniformNoise)
-    print(tab)
+    tab = get_stats(n_measurements, a, b, size, mu, sigma, noise_class=Noise, out_path='./gauss_0_1.csv')
