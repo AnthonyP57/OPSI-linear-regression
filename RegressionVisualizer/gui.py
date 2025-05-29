@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from RegressionVisualizer.data import ExponentialData, InverseData, LogData
+from data import ExponentialData, InverseData, LogData
 from noise import Noise, UniformNoise
 from regression import apply_regression
 from plotting import create_plot
@@ -13,7 +13,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Regression Visualizer")
-        self.geometry("800x600")
+        self.geometry("1000x1000")
 
         self.a = 1
         self.b = 2
