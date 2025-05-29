@@ -17,7 +17,7 @@ def timeit(f):
     return timed
 
 def xy_plot(x_test, y_test, pred, tlr_metrics, save_to, name=None):
-  plt.plot((min(x_test), max(x_test)), (min(y_test), max(y_test)), linestyle='--', color='red', linewidth=1, label='True Values')
+  plt.plot((min(np.array(x_test).reshape(-1)), max(np.array(x_test).reshape(-1))), (min(np.array(y_test).reshape(-1)), max(np.array(y_test).reshape(-1))), linestyle='--', color='red', linewidth=1, label='True Values')
   plt.scatter(x_test, pred, s=10, linewidths=0.5, label=f'Predicted Values (R2={tlr_metrics[1]:.3f})')
   plt.xlabel('x')
   plt.ylabel('y')
@@ -28,7 +28,7 @@ def xy_plot(x_test, y_test, pred, tlr_metrics, save_to, name=None):
   plt.close()
 
 def actual_vs_pred(y_test, pred, tlr_metrics, save_to, name=None):
-  plt.plot((min(y_test), max(y_test)), (min(y_test), max(y_test)), linestyle='-', color='blue', linewidth=1, label='True Values')
+  plt.plot((min(np.array(y_test).reshape(-1)), max(np.array(y_test).reshape(-1))), (min(np.array(y_test).reshape(-1)), max(np.array(y_test).reshape(-1))), linestyle='-', color='blue', linewidth=1, label='True Values')
   plt.scatter(y_test, pred, s=10, linewidths=0.5, label=f'Predicted Values (R2={tlr_metrics[1]:.3f})')
   plt.xlabel('Labels')
   plt.ylabel('Predictions')

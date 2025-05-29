@@ -164,5 +164,3 @@ if __name__ == "__main__":
     data = np.hstack((data, np.vstack((nlt_weights, clr_weights, tlt_weights)))).round(3)
     metrics = pd.DataFrame(columns=['MSE test', 'R2 test', 'MSE train', 'R2 train']+[f'weight_{i}' for i in range(x.shape[1])]+['bias'], index=['NumpyLinReg', 'NumpyLinRegCloseForm', 'TorchLinReg'], data=data)
     print(metrics.to_string())
-
-

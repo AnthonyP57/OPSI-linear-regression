@@ -1,113 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 import statsmodels.api as sm
 from statsmodels.stats.diagnostic import het_white
 from statsmodels.stats.stattools import durbin_watson
 import pprint
+from RegressionVisualizer.noise import UniformNoise, Noise
+from RegressionVisualizer.data import ExponentialData, InverseData, LogData
+from RegressionVisualizer.regression import apply_regression
+import pandas as pd
 
-# ------------------ Dane i Szum ------------------
-class ExponentialData:
-    def __init__(self, a, b, size, minmax=(0,1)):
-        self.a = a
-        self.b = b
-        self.size = size
-        self.minmax = minmax
-        self.x, self.y = self.generate_data()
-
-    def generate_data(self):
-        x = np.linspace(*self.minmax, self.size)
-        y = self.a * np.exp(x * self.b)
-        return x, y
-    
-    def __add__(self, noise):
-        if hasattr(noise, 'value'):
-            self.y += noise.value
-            return self
-        raise Exception('invalid value')
-    
-    def linearize(self):
-        return np.log(self.y), self.x
-
-
-class InverseData:
-    def __init__(self, a, b, size, minmax=(0,1)):
-        self.a = a
-        self.b = b
-        self.size = size
-        self.minmax = minmax
-        self.x, self.y = self.generate_data()
-
-    def generate_data(self):
-        x = np.linspace(*self.minmax, self.size)
-        y = self.a / (x + self.b)
-        return x, y
-    
-    def __add__(self, noise):
-        if hasattr(noise, 'value'):
-            self.y += noise.value
-            return self
-        raise Exception('invalid value')
-    
-    def linearize(self):
-        return 1/self.y, self.x
-
-
-class LogData:
-    def __init__(self, a, b, size, minmax=(1,2)):
-        self.a = a
-        self.b = b
-        self.size = size
-        self.minmax = minmax
-        self.x, self.y = self.generate_data()
-
-    def generate_data(self):
-        x = np.linspace(*self.minmax, self.size)
-        y = self.a * np.log(x) + self.b
-        return x, y
-
-    def __add__(self, noise):
-        if hasattr(noise, 'value'):
-            self.y += noise.value
-            return self
-        raise Exception('invalid value')
-    
-    def linearize(self):
-        return self.y, np.log(self.x)
-
-
-class Noise:
-    def __init__(self, mu, sigma, size):
-        self.mu = mu
-        self.sigma = sigma
-        self.size = size
-        self.value = np.random.normal(mu, sigma, size)
-
-
-class UniformNoise:
-    def __init__(self, mu, max_deviation, size):
-        self.mu = mu
-        self.max_deviation = max_deviation
-        self.size = size
-        self.value = (np.random.random(size)*2 - 1) * max_deviation + mu
-
-
-# ------------------ Regresja ------------------
-def apply_regression(x, y):
-    x = x.reshape(-1, 1)
-    model = LinearRegression()
-    model.fit(x, y)
-    return model.coef_[0], model.intercept_, model.score(x, y), model
-
-
-# ------------------ Główna Logika ------------------
 if __name__ == "__main__":
     a = 1
     b = 2
     size = 16
     noise_levels = [0.01, 0.05, 0.1]
-    repetitions = 100
+    repetitions = 10
 
     results_noise = {level: {} for level in noise_levels}
     results_tests = {level: {label: {'MSE': [], 'White_p': [], 'Durbin_Watson': []}
@@ -189,7 +97,7 @@ if __name__ == "__main__":
                     f"{label} (σ={sigma})\na={a}, b={b}\ncoef={coef:.2f}, intercept={intercept:.2f}, MSE={mse:.3f}",
                     fontsize=10
                 )
-                axs_linear[i, j].legend(fontsize=10)
+                # axs_linear[i, j].legend(fontsize=10)
                 axs_linear[i, j].grid(True)
 
                 # Wykres oryginalny
@@ -198,7 +106,7 @@ if __name__ == "__main__":
                     f"{label} (σ={sigma})\na={a}, b={b}",
                     fontsize=10
                 )
-                axs_original[i, j].legend(fontsize=10)
+                # axs_original[i, j].legend(fontsize=10)
                 axs_original[i, j].grid(True)
 
                 # Wykres reszt
@@ -241,15 +149,28 @@ if __name__ == "__main__":
         fig_residuals.savefig('residuals_all_sigmas_uniform.png')
         plt.close(fig_residuals)
 
-        averaged_results = {}
+        averaged_results_mse = {}
+        averaged_results_white_p = {}
+        averaged_results_dw = {}
         for sigma in noise_levels:
-            averaged_results[sigma] = {}
+            averaged_results_mse[sigma] = {}
+            averaged_results_white_p[sigma] = {}
+            averaged_results_dw[sigma] = {}
             for label in ['Exponential', 'Inverse', 'Logarithmic']:
-                averaged_results[sigma][label] = {
-                    'MSE': np.mean(results_tests[sigma][label]['MSE']),
-                    'White_p': np.mean(results_tests[sigma][label]['White_p']),
-                    'Durbin_Watson': np.mean(results_tests[sigma][label]['Durbin_Watson']),
-                }
+                averaged_results_mse[sigma][label] = np.mean(results_tests[sigma][label]['MSE'])
+                averaged_results_white_p[sigma][label] = np.mean(results_tests[sigma][label]['White_p'])
+                averaged_results_dw[sigma][label] = np.mean(results_tests[sigma][label]['Durbin_Watson'])
 
         print("Średnie wyniki diagnostyczne (MSE, White p-value, Durbin-Watson):")
-        pprint.pprint(averaged_results)
+        print('------------------------------')
+        print('MSE')
+        df = pd.DataFrame(averaged_results_mse)
+        print(df)
+        print('------------------------------')
+        print('White p-value')
+        df = pd.DataFrame(averaged_results_white_p)
+        print(df)
+        print('------------------------------')
+        print('Durbin-Watson')
+        df = pd.DataFrame(averaged_results_dw)
+        print(df)
