@@ -3,6 +3,10 @@
 >```
 >pdco ./file_of_choice.py -o ./docs
 >```
+>You can create conda env with
+>```
+>conda env create -f ./dependencies.yml
+>```
 
 # Badanie wpływu błędów pomiarowych na wynik regresji liniowej
 W prezentowanej pracy zakładamy jedynie liniową zależność danych i.e. y = xW + b
