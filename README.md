@@ -157,31 +157,31 @@ generate_data.py
 Można za pomocą niego uzyskać przykładowe funkcje nielinowe e.g.
 
 <p align="left">
-  <img src="./data.png" alt="data" width="450"/>
+  <img src="./img/data.png" alt="data" width="450"/>
 </p>
 
 Następnie, po przekształceniu, ich liniową postać
 
 <p align="left">
-  <img src="./data_linear.png" alt="data" width="450"/>
+  <img src="./img/data_linear.png" alt="data" width="450"/>
 </p>
 
 Porównanie ich wyglądu ze względu na poziom dodanego szumu (poniżej akurat z dystrybucji Gaussa). Przed linearyzacją
 
 <p align="left">
-  <img src="./original_all_sigmas.png" alt="data" width="700"/>
+  <img src="./img/original_all_sigmas.png" alt="data" width="700"/>
 </p>
 
 Oraz po linearyzacji
 
 <p align="left">
-  <img src="./linearized_all_sigmas.png" alt="data" width="700"/>
+  <img src="./img/linearized_all_sigmas.png" alt="data" width="700"/>
 </p>
 
 Również otzymamy informację na temat reszt regresji liniowej
 
 <p align="left">
-  <img src="./residuals_all_sigmas.png" alt="data" width="700"/>
+  <img src="./img/residuals_all_sigmas.png" alt="data" width="700"/>
 </p>
 
 Wielokrotne wyznaczanie metryk modelu, w celu wyznaczenia statstyk można uzyskać za pomocą:
