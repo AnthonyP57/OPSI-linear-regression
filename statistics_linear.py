@@ -5,6 +5,11 @@ import pandas as pd
 
 
 def get_stats(n_measurements, a, b, size, mu, sigma, out_path=None, noise_class=Noise): # not most efficient code but works
+    """
+    This function generates data using LogData, InverseData, and ExponentialData classes, adds noise using the specified noise class,
+    and calculates the R2 values for each type of data. The results are then stored in a pandas DataFrame and returned.
+    If out_path is specified, the DataFrame is also saved to a CSV file at the specified location.
+    """
 
     in_data_x = [[] for _ in range(3)]
     in_data_y = [[] for _ in range(3)]

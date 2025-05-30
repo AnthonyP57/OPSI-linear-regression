@@ -10,17 +10,29 @@ from modules import timeit, xy_plot, actual_vs_pred, xyz_plot
 import pandas as pd
 
 class NumpyLinReg:
+    """
+    An implementation of linear regression (LR) as a single neuron
+    """
     def __init__(self, in_features, bias=False, lr=0.1):
+        """
+        initiate all the model parameters
+        """
         self.weights = np.random.randn(in_features) # ~ (f)
         self.bias = np.random.randn(1) if bias else np.zeros(1) # ~ (1)
         self.calc_bias = bias
         self.lr = lr
 
     def forward(self, x):
+        """
+        function for inference
+        """
         # x ~ (n, f)
         return x @ self.weights + self.bias
     
     def update_weights(self, x, y):
+        """
+        single training iteration
+        """
         weight_sum = np.dot(self.weights, x)
         for i in range(len(self.weights)):
             derivative = - x[i] * (y - weight_sum - self.bias) # SE = 1/2 * (y - y')^2
@@ -32,6 +44,9 @@ class NumpyLinReg:
     
     @timeit
     def train(self, x, y, epochs=100):
+        """
+        training loop
+        """
         xy = np.random.permutation(np.hstack((x, y))) # shuffle
         x, y = xy[:, :-1], xy[:, -1]
 
@@ -48,17 +63,29 @@ class NumpyLinReg:
         return self
     
     def validate(self, x, y):
+        """
+        validation of the model by calculating MSE and R2
+        """
         y_pred = self.forward(x)
         y = y.reshape(-1)
         return np.mean((y - y_pred)**2), r2_score(y, y_pred)
 
 class NumpyLinRegCloseForm:
+    """
+    An implementation of linear regresiion based its the closed form
+    """
     def __init__(self, bias=False):
+        """
+        initiate parameters
+        """
         self.bias = bias
         self.weights = None
 
     @timeit
     def fit(self, x, y):
+        """
+        fit the paremeters to the data, here we do not require training (as it is only required for gradient based approaches   )
+        """
         if self.bias:
             x = np.hstack((x, np.ones((x.shape[0], 1))))
         try:
@@ -68,17 +95,29 @@ class NumpyLinRegCloseForm:
             self.weights = np.linalg.pinv(x.T @ x) @ x.T @ y
     
     def forward(self, x):
+        """
+        inference
+        """
         if self.bias:
             x = np.hstack((x, np.ones((x.shape[0], 1))))
         return x @ self.weights
     
     def validate(self, x, y):
+        """
+        validation og the model based on MSE and R2
+        """
         y_pred = self.forward(x)
         return np.mean((y - y_pred)**2), r2_score(y, y_pred)
 
 
 class TorchLinReg(nn.Module):
+    """
+    An implementation of linear regression (LR) as a single neuron with Pytorch
+    """
     def __init__(self, in_features, bias=False, lr=0.1, device=None):
+        """
+        inherit from nn.Module and initiate parameters
+        """
         super().__init__()
         self.l = nn.Linear(in_features, 1, bias=bias)
         self.lr = lr
@@ -88,12 +127,18 @@ class TorchLinReg(nn.Module):
             self.to(device)
     
     def forward(self, x):
+        """
+        forward function, as required by Pytorch nn.Module
+        """
         if self.device:
             x = x.to(self.device)
         return self.l(x)
 
     @timeit
     def train(self, x, y, epochs=100):
+        """
+        training loop
+        """
         if self.device:
             x, y = x.to(self.device), y.to(self.device)
         # data = TensorDataset(x, y)
@@ -109,6 +154,9 @@ class TorchLinReg(nn.Module):
             optimizer.step()
     
     def validate(self, x, y):
+        """
+        validation loop - MSE and R2
+        """
         y_pred = self.forward(x)
         y, y_pred = y.detach().numpy(), y_pred.detach().numpy()
         return np.mean((y - y_pred)**2), r2_score(y, y_pred)

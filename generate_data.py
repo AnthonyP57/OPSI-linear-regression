@@ -10,6 +10,13 @@ from RegressionVisualizer.data import ExponentialData, InverseData, LogData
 from RegressionVisualizer.regression import apply_regression
 import pandas as pd
 
+
+"""
+In this file we generate figures showing the effect of noise on the data.
+The data is then linearized and the linear regression is applied to the linearized data.
+We can then compare the coefficients, intercepts, and R^2 values.
+"""
+
 if __name__ == "__main__":
     a = 1
     b = 2

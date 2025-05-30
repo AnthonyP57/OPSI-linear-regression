@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def create_plot(datasets, title, linearized=False):
+    """
+    This function creates a line plot using matplotlib, sets the title and axis labels, and displays the plot.
+    If out_path is specified, the plot is also saved to a file at the specified location.
+    """
     nrows = len(datasets)
     ncols = len(datasets[0])
     fig, axes = plt.subplots(nrows, ncols, figsize=(5*ncols, 4*nrows))

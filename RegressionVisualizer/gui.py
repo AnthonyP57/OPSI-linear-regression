@@ -10,7 +10,26 @@ from regression import apply_regression
 from plotting import create_plot
 
 class App(tk.Tk):
+    """
+    A class representing the application.
+
+    Attributes:
+    config (dict): Configuration settings for the application.
+    data (array-like): Input data for the application.
+    model (object): Trained model used by the application.
+
+    Methods:
+    __init__(config, data): Initializes the application object.
+    run(): Runs the application.
+    """
     def __init__(self):
+        """
+        Initializes the application object.
+
+        Parameters:
+        config (dict): Configuration settings for the application.
+        data (array-like): Input data for the application.
+        """
         super().__init__()
         self.title("Regression Visualizer")
         self.geometry("1000x1000")
@@ -28,6 +47,9 @@ class App(tk.Tk):
         self.generate_plot()
 
     def create_widgets(self):
+        """
+        Creates the user interface widgets for the application.
+        """
         control_frame = ttk.Frame(self)
         control_frame.pack(side='left', fill='y', padx=10, pady=10)
 
@@ -52,6 +74,9 @@ class App(tk.Tk):
         self.plot_frame.pack(side='right', fill='both', expand=True)
 
     def generate_plot(self):
+        """
+        Generates a plot based on the current configuration settings.
+        """
         # Clear previous plot widget
         if self.canvas:
             self.canvas.get_tk_widget().destroy()

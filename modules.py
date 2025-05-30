@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def timeit(f):
+    """
+    Decorator to time functions
+    """
 
     def timed(*args, **kw):
 
@@ -17,6 +20,9 @@ def timeit(f):
     return timed
 
 def xy_plot(x_test, y_test, pred, tlr_metrics, save_to, name=None):
+  """
+  2d plotting function
+  """
   plt.plot((min(np.array(x_test).reshape(-1)), max(np.array(x_test).reshape(-1))), (min(np.array(y_test).reshape(-1)), max(np.array(y_test).reshape(-1))), linestyle='--', color='red', linewidth=1, label='True Values')
   plt.scatter(x_test, pred, s=10, linewidths=0.5, label=f'Predicted Values (R2={tlr_metrics[1]:.3f})')
   plt.xlabel('x')
@@ -28,6 +34,9 @@ def xy_plot(x_test, y_test, pred, tlr_metrics, save_to, name=None):
   plt.close()
 
 def actual_vs_pred(y_test, pred, tlr_metrics, save_to, name=None):
+  """
+  actual vs predicted plotting function
+  """
   plt.plot((min(np.array(y_test).reshape(-1)), max(np.array(y_test).reshape(-1))), (min(np.array(y_test).reshape(-1)), max(np.array(y_test).reshape(-1))), linestyle='-', color='blue', linewidth=1, label='True Values')
   plt.scatter(y_test, pred, s=10, linewidths=0.5, label=f'Predicted Values (R2={tlr_metrics[1]:.3f})')
   plt.xlabel('Labels')
@@ -39,6 +48,9 @@ def actual_vs_pred(y_test, pred, tlr_metrics, save_to, name=None):
   plt.close()
 
 def xyz_plot(x_test, y_test, pred, tlr_metrics, save_to, name=None):
+  """
+  3d plotting function
+  """
   ax = plt.axes(projection="3d")
 
   z_line = (min(y_test.reshape(-1)), max(y_test.reshape(-1))) # y_test
