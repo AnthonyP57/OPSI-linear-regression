@@ -1,4 +1,5 @@
->[!NOTE] You can use pdoc for interactive documentation.
+>[!NOTE]
+>You can use pdoc for interactive documentation.
 >```
 >pdco ./file_of_choice.py -o ./docs
 >```
