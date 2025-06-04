@@ -1,10 +1,10 @@
 >[!NOTE]
 >You can use pdoc for interactive documentation.
->```
->pdco ./file_of_choice.py -o ./docs
+>```bash
+>pdoc ./file_of_choice.py
 >```
 >You can create conda env with
->```
+>```bash
 >conda env create -f ./dependencies.yml
 >```
 
@@ -35,7 +35,7 @@ $X'^TX'W = X'^Ty$
 
 $W = (X'^TX')^{-1}X'^Ty$
 
-```
+```python
 class NumpyLinRegCloseForm:
     def __init__(self, bias=False):
         self.bias = bias
@@ -73,7 +73,7 @@ Zatem aktualizacja naszego parametry przeprowadzana jest następująco $w_{t+1} 
 
 #### Kod
 ***Inicjalizacja wag***
-```
+```python
 class NumpyLinReg:
     def __init__(self, in_features, bias=False, lr=0.1):
         self.weights = np.random.randn(in_features) # ~ (f)
@@ -82,13 +82,13 @@ class NumpyLinReg:
         self.lr = lr
 ```
 **Liczenie $\hat{y}$ (predykcja)**
-```
+```python
     def forward(self, x):
         # x ~ (n, f)
         return x @ self.weights + self.bias
 ```
 **funkcja update'u wartości wag**
-```
+```python
     def update_weights(self, x, y):
         weight_sum = np.dot(self.weights, x)
         for i in range(len(self.weights)):
@@ -96,13 +96,13 @@ class NumpyLinReg:
             self.weights[i] -= self.lr*derivative.item()
 ```
 **funkcja update'u bias'u (tu liczymy osobno)**
-```
+```python
     def update_bias(self, x, y):
         derivative = - (y - x @ self.weights - self.bias) # SE = 1/2 * (y - y')^2
         self.bias -= self.lr*derivative.item()
 ```
 **trening modelu**
-```
+```python
     @timeit
     def train(self, x, y, epochs=100):
         xy = np.random.permutation(np.hstack((x, y))) # shuffle
@@ -121,7 +121,7 @@ class NumpyLinReg:
         return self
 ```
 **walidacja modelu**
-```
+```python
     def validate(self, x, y):
         y_pred = self.forward(x)
         y = y.reshape(-1)
@@ -151,7 +151,7 @@ $ln(y) \approx ln(a) + b \cdot [x] + noise'$
 
 # Statystyki
 Przykłądowe statystyki można otrzymać za pomocą modułu:
-```
+```bash
 generate_data.py
 ```
 Można za pomocą niego uzyskać przykładowe funkcje nielinowe e.g.
@@ -185,7 +185,7 @@ Również otzymamy informację na temat reszt regresji liniowej
 </p>
 
 Wielokrotne wyznaczanie metryk modelu, w celu wyznaczenia statstyk można uzyskać za pomocą:
-```
+```bash
 statistics_linear.py
 ```
 

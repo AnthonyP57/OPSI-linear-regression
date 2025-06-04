@@ -74,14 +74,15 @@ class NumpyLinRegCloseForm:
     """
     An implementation of linear regresiion based its the closed form
     """
-    def __init__(self, bias=False):
+    def __init__(self, bias=False, regularization=0):
         """
         initiate parameters
         """
         self.bias = bias
         self.weights = None
+        self.regularization = regularization
 
-    @timeit
+    # @timeit
     def fit(self, x, y):
         """
         fit the paremeters to the data, here we do not require training (as it is only required for gradient based approaches   )
@@ -89,10 +90,10 @@ class NumpyLinRegCloseForm:
         if self.bias:
             x = np.hstack((x, np.ones((x.shape[0], 1))))
         try:
-            self.weights = np.linalg.inv(x.T @ x) @ x.T @ y
+            self.weights = np.linalg.inv(x.T @ x + np.eye(x.shape[1])*self.regularization) @ x.T @ y
         except:
             warnings.warn("matrix inverse failed, using pseudo inverse instead", Warning)
-            self.weights = np.linalg.pinv(x.T @ x) @ x.T @ y
+            self.weights = np.linalg.pinv(x.T @ x + np.eye(x.shape[1])*self.regularization) @ x.T @ y
     
     def forward(self, x):
         """
@@ -168,6 +169,7 @@ if __name__ == "__main__":
     x = np.arange(0, 1000, 1, dtype=np.float32).reshape(-1, 1)/1000
     x = np.hstack((x, x*1.5))
     y = np.sum(x, axis=1).reshape(-1, 1) + 0.1
+    y += np.random.normal(0, 0.1, y.shape)
     # y = x*2 + 1
 
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.05, random_state=42)
@@ -212,3 +214,4 @@ if __name__ == "__main__":
     data = np.hstack((data, np.vstack((nlt_weights, clr_weights, tlt_weights)))).round(3)
     metrics = pd.DataFrame(columns=['MSE test', 'R2 test', 'MSE train', 'R2 train']+[f'weight_{i}' for i in range(x.shape[1])]+['bias'], index=['NumpyLinReg', 'NumpyLinRegCloseForm', 'TorchLinReg'], data=data)
     print(metrics.to_string())
+    metrics.to_csv('./metrics.csv')
